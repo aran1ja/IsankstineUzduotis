@@ -1,5 +1,7 @@
 #include "funkcija.h"
 
+//kazku klaida: what(): invalid special open parenthesis
+
 bool failoAtidarymas(const string& failoPasirinkimas) {
     ifstream failas(failoPasirinkimas);
     return failas.good();
@@ -35,7 +37,7 @@ void zodziuIrasymasSarase(const string& zodis, map<string, vector<int>>& sarasas
     }
 }
 
-void failoSkaitymas(const string& failoPasirinkimas, map<string, vector<int>>& sarasas) {
+void failoSkaitymas(const string& failoPasirinkimas, map<string, vector<int>>& sarasas, vector<string>& url) {
     ifstream failas(failoPasirinkimas);
     string eilute;
     int eilutesSkaicius = 0;
@@ -46,7 +48,9 @@ void failoSkaitymas(const string& failoPasirinkimas, map<string, vector<int>>& s
         string zodis;
         while (in >> zodis) {
             bool arYraSkaicius = any_of(zodis.begin(), zodis.end(), ::isdigit);
-            if (!arYraSkaicius) {
+            if (ieskomeURL(zodis)) {
+                url.push_back(zodis);
+            } else if (!arYraSkaicius) { 
                 string tinkamasZodis = tvarkomeZodzius(zodis);
                 istringstream irasomeTikTinkamusZodzius(tinkamasZodis);
                 while (irasomeTikTinkamusZodzius >> zodis) {
@@ -57,15 +61,17 @@ void failoSkaitymas(const string& failoPasirinkimas, map<string, vector<int>>& s
     }
 }
 
-void irasymasIFaila(const map<string, vector<int>>& sarasas) {
+void irasymasIFaila(const map<string, vector<int>>& sarasas, const vector<string>& url) {
     ofstream rezultatas("rezultatas.txt");
     if (!rezultatas.good()) {
         cout << "Failo nepavyko sukurti." << endl;
         return;
     }
 
-    rezultatas << "Buvo rasta tiek URL: " << endl;
-    rezultatas << ieskomeURL << endl; // Pataisyti, nes blogai veikia. Sukurti konteineri tam
+    rezultatas << "Buvo rasti tokie URL: " << endl;
+    for (const auto& urls : url) {
+        rezultatas << urls << endl;
+    }
 
     if (!sarasas.empty()) {
         rezultatas << left << setw(20) << "Zodziai:" << setw(21) << " Zodziu kiekis:" <<  "Zodziai yra tokiose eilutese:" << endl;
@@ -97,9 +103,10 @@ int  main() {
     }
 
     map<string, vector<int>> sarasoIsvedimas;
+    vector<string> url;
 
-    failoSkaitymas(failoPasirinkimas, sarasoIsvedimas);
-    irasymasIFaila(sarasoIsvedimas);
+    failoSkaitymas(failoPasirinkimas, sarasoIsvedimas, url);
+    irasymasIFaila(sarasoIsvedimas, url);
 
     cout << "Rezultatas gautas, ji perziureti galima sukurtame faile 'rezultatas.txt'." << endl;
 
