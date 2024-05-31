@@ -12,6 +12,10 @@ string tvarkomeZodzius(const string& zodis) {
     return tinkamasZodis;
 }
 
+bool ieskomeURL(const string& zodis) {
+    regex url("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?");
+    return regex_match(zodis, url);
+}
 
 void zodziuIrasymasSarase(const string& zodis, map<string, vector<int>>& sarasas, int eilutesSkaicius) {
     if (zodis.empty())
@@ -59,6 +63,9 @@ void irasymasIFaila(const map<string, vector<int>>& sarasas) {
         cout << "Failo nepavyko sukurti." << endl;
         return;
     }
+
+    rezultatas << "Buvo rasta tiek URL: " << endl;
+    rezultatas << ieskomeURL << endl; // Pataisyti, nes blogai veikia. Sukurti konteineri tam
 
     if (!sarasas.empty()) {
         rezultatas << left << setw(20) << "Zodziai:" << setw(21) << " Zodziu kiekis:" <<  "Zodziai yra tokiose eilutese:" << endl;

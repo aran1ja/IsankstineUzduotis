@@ -15,6 +15,7 @@ using namespace std;
 
 bool failoAtidarymas(const string& failoPasirinkimas);
 string tvarkomeZodzius(const string& zodis);
+bool ieskomeURL(const string& zodis);
 void zodziuIrasymasSarase(const string& zodis, map<string, vector<int>>& sarasas, int eilutesSkaicius);
 void failoSkaitymas(const string& failoPasirinkimas, map<string, vector<int>>& sarasas);
 void irasymasIFaila(const map<string, vector<int>>& sarasas);
