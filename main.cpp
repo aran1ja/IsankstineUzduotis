@@ -5,6 +5,14 @@ bool failoAtidarymas(const string& failoPasirinkimas) {
     return failas.good();
 }
 
+string tvarkomeZodzius(const string& zodis) {
+    regex neZodziuDalis("[^\\w]");
+    string tinkamasZodis = regex_replace(zodis, neZodziuDalis, " ");
+    transform(tinkamasZodis.begin(), tinkamasZodis.end(), tinkamasZodis.begin(), ::tolower);
+    return tinkamasZodis;
+}
+
+
 void zodziuIrasymasSarase(const string& zodis, map<string, vector<int>>& sarasas, int eilutesSkaicius) {
     if (zodis.empty())
         return;
@@ -35,7 +43,9 @@ void failoSkaitymas(const string& failoPasirinkimas, map<string, vector<int>>& s
         while (in >> zodis) {
             bool arYraSkaicius = any_of(zodis.begin(), zodis.end(), ::isdigit);
             if (!arYraSkaicius) {
-                while (in >> zodis) {
+                string tinkamasZodis = tvarkomeZodzius(zodis);
+                istringstream irasomeTikTinkamusZodzius(tinkamasZodis);
+                while (irasomeTikTinkamusZodzius >> zodis) {
                     zodziuIrasymasSarase(zodis, sarasas, eilutesSkaicius);
                 }
             }
@@ -52,6 +62,7 @@ void irasymasIFaila(const map<string, vector<int>>& sarasas) {
 
     if (!sarasas.empty()) {
         rezultatas << left << setw(20) << "Zodziai:" << setw(21) << " Zodziu kiekis:" <<  "Zodziai yra tokiose eilutese:" << endl;
+        rezultatas << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
 
         for (const auto& i : sarasas) {
             if (i.second.size() > 1) {
@@ -83,7 +94,7 @@ int  main() {
     failoSkaitymas(failoPasirinkimas, sarasoIsvedimas);
     irasymasIFaila(sarasoIsvedimas);
 
-    cout << "Rezultatas gautas, ji perziureti galima sukurtamr faile 'rezultatas.txt'." << endl;
+    cout << "Rezultatas gautas, ji perziureti galima sukurtame faile 'rezultatas.txt'." << endl;
 
     return 0;
 }
